@@ -3,6 +3,11 @@ import pickle
 import numpy as np
 import pandas as pd
 import shap
+import os
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from imblearn.over_sampling import SMOTE
 
 # Page config
 st.set_page_config(
@@ -10,18 +15,6 @@ st.set_page_config(
     page_icon="📉",
     layout="centered"
 )
-
-# Load model and scaler
-@st.cache_resource
-def load_model():
-    with open('models/best_model.pkl', 'rb') as f:
-        model = pickle.load(f)
-    with open('models/scaler.pkl', 'rb') as f:
-        scaler = pickle.load(f)
-    explainer = shap.TreeExplainer(model)
-    return model, scaler, explainer
-
-model, scaler, explainer = load_model()
 
 # Suggestions mapping
 SUGGESTIONS = {
@@ -36,6 +29,41 @@ SUGGESTIONS = {
     'PaperlessBilling': "💡 Educate customer on paperless billing benefits.",
     'TotalCharges': "💡 Review if total spend justifies a loyalty reward or upgrade offer.",
 }
+
+@st.cache_resource
+def train_model():
+    df = pd.read_csv('data/WA_Fn-UseC_-Telco-Customer-Churn.csv')
+    df.drop(columns=['customerID'], inplace=True)
+    df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
+    df.dropna(inplace=True)
+    df['Churn'] = df['Churn'].map({'Yes': 1, 'No': 0})
+    cat_cols = df.select_dtypes(include='object').columns
+    le = LabelEncoder()
+    for col in cat_cols:
+        df[col] = le.fit_transform(df[col])
+    X = df.drop(columns=['Churn'])
+    y = df['Churn']
+    sm = SMOTE(random_state=42)
+    X, y = sm.fit_resample(X, y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    model = RandomForestClassifier(
+        n_estimators=300,
+        max_features='sqrt',
+        min_samples_split=5,
+        max_depth=None,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+    explainer = shap.TreeExplainer(model)
+    return model, scaler, explainer
+
+# Train on startup
+with st.spinner("🔄 Loading model... please wait"):
+    model, scaler, explainer = train_model()
 
 # Title
 st.title("📉 Customer Churn Predictor")
@@ -73,7 +101,6 @@ with col2:
 
 st.divider()
 
-# Predict button
 if st.button("🔍 Predict Churn", use_container_width=True):
 
     input_dict = {
@@ -108,7 +135,6 @@ if st.button("🔍 Predict Churn", use_container_width=True):
     prediction = model.predict(input_scaled)[0]
     probability = model.predict_proba(input_scaled)[0][1]
 
-    # Result
     st.subheader("Prediction Result")
     if prediction == 1:
         st.error("⚠️ This customer is likely to **CHURN**")
@@ -131,7 +157,6 @@ if st.button("🔍 Predict Churn", use_container_width=True):
     feature_names = list(input_dict.keys())
     shap_vals = shap_values[0, :, 1] if len(np.array(shap_values).shape) == 3 else shap_values[1][0]
 
-    # Top 3 churn reasons
     shap_df = pd.DataFrame({
         'Feature': feature_names,
         'SHAP': shap_vals
@@ -146,7 +171,6 @@ if st.button("🔍 Predict Churn", use_container_width=True):
 
         st.divider()
 
-        # Suggestions
         st.subheader("📋 Retention Suggestions")
         shown = 0
         for _, row in top_churn_drivers.iterrows():
