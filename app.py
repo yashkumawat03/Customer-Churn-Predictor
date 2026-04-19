@@ -12,22 +12,22 @@ from imblearn.over_sampling import SMOTE
 # Page config
 st.set_page_config(
     page_title="Customer Churn Predictor",
-    page_icon="📉",
+    page_icon="",
     layout="centered"
 )
 
 # Suggestions mapping
 SUGGESTIONS = {
-    'Contract': "💡 Offer a discounted annual or two-year contract to lock in the customer.",
-    'MonthlyCharges': "💡 Consider offering a loyalty discount or a cheaper plan bundle.",
-    'tenure': "💡 This is a new customer — assign a dedicated onboarding support agent.",
-    'OnlineSecurity': "💡 Offer a free trial of Online Security add-on for 3 months.",
-    'TechSupport': "💡 Offer free Tech Support upgrade for the next billing cycle.",
-    'OnlineBackup': "💡 Highlight the value of Online Backup — offer it at a reduced rate.",
-    'InternetService': "💡 Check if the customer is satisfied with internet speed and reliability.",
-    'PaymentMethod': "💡 Encourage auto-payment setup with a small monthly discount.",
-    'PaperlessBilling': "💡 Educate customer on paperless billing benefits.",
-    'TotalCharges': "💡 Review if total spend justifies a loyalty reward or upgrade offer.",
+    'Contract': " Offer a discounted annual or two-year contract to lock in the customer.",
+    'MonthlyCharges': " Consider offering a loyalty discount or a cheaper plan bundle.",
+    'tenure': " This is a new customer — assign a dedicated onboarding support agent.",
+    'OnlineSecurity': " Offer a free trial of Online Security add-on for 3 months.",
+    'TechSupport': " Offer free Tech Support upgrade for the next billing cycle.",
+    'OnlineBackup': " Highlight the value of Online Backup — offer it at a reduced rate.",
+    'InternetService': " Check if the customer is satisfied with internet speed and reliability.",
+    'PaymentMethod': " Encourage auto-payment setup with a small monthly discount.",
+    'PaperlessBilling': " Educate customer on paperless billing benefits.",
+    'TotalCharges': " Review if total spend justifies a loyalty reward or upgrade offer.",
 }
 
 @st.cache_resource
@@ -62,11 +62,11 @@ def train_model():
     return model, scaler, explainer
 
 # Train on startup
-with st.spinner("🔄 Loading model... please wait"):
+with st.spinner(" Loading model... please wait"):
     model, scaler, explainer = train_model()
 
 # Title
-st.title("📉 Customer Churn Predictor")
+st.title(" Customer Churn Predictor")
 st.markdown("Enter customer details below to predict whether they are likely to churn.")
 st.divider()
 
@@ -101,7 +101,7 @@ with col2:
 
 st.divider()
 
-if st.button("🔍 Predict Churn", use_container_width=True):
+if st.button(" Predict Churn", use_container_width=True):
 
     input_dict = {
         'gender': 1 if gender == "Male" else 0,
@@ -137,18 +137,18 @@ if st.button("🔍 Predict Churn", use_container_width=True):
 
     st.subheader("Prediction Result")
     if prediction == 1:
-        st.error("⚠️ This customer is likely to **CHURN**")
+        st.error(" This customer is likely to **CHURN**")
     else:
-        st.success("✅ This customer is likely to **STAY**")
+        st.success(" This customer is likely to **STAY**")
 
     st.metric("Churn Probability", f"{probability * 100:.1f}%")
 
     if probability >= 0.7:
-        st.warning("🔴 High Risk — Immediate retention action recommended")
+        st.warning(" High Risk — Immediate retention action recommended")
     elif probability >= 0.4:
-        st.warning("🟡 Medium Risk — Monitor this customer closely")
+        st.warning(" Medium Risk — Monitor this customer closely")
     else:
-        st.info("🟢 Low Risk — Customer appears stable")
+        st.info(" Low Risk — Customer appears stable")
 
     st.divider()
 
@@ -165,13 +165,13 @@ if st.button("🔍 Predict Churn", use_container_width=True):
     top_churn_drivers = shap_df[shap_df['SHAP'] > 0].head(3)
 
     if not top_churn_drivers.empty and prediction == 1:
-        st.subheader("🔎 Top Reasons for Churn Risk")
+        st.subheader(" Top Reasons for Churn Risk")
         for _, row in top_churn_drivers.iterrows():
             st.markdown(f"- **{row['Feature']}** is pushing this customer towards churn")
 
         st.divider()
 
-        st.subheader("📋 Retention Suggestions")
+        st.subheader(" Retention Suggestions")
         shown = 0
         for _, row in top_churn_drivers.iterrows():
             feature = row['Feature']
@@ -179,10 +179,10 @@ if st.button("🔍 Predict Churn", use_container_width=True):
                 st.markdown(SUGGESTIONS[feature])
                 shown += 1
         if shown == 0:
-            st.markdown("💡 Consider reaching out personally to understand customer concerns.")
+            st.markdown(" Consider reaching out personally to understand customer concerns.")
 
     elif prediction == 0:
-        st.subheader("🔎 Why This Customer Is Stable")
+        st.subheader(" Why This Customer Is Stable")
         top_stable = shap_df[shap_df['SHAP'] < 0].tail(3)
         for _, row in top_stable.iterrows():
             st.markdown(f"- **{row['Feature']}** is keeping this customer loyal")
