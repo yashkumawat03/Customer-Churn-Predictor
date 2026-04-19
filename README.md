@@ -1,4 +1,4 @@
-# 📉 Customer Churn Predictor
+#  Customer Churn Predictor
 
 A machine learning web app that predicts whether a telecom customer is likely to churn, explains the reasons, and suggests retention strategies.
 
@@ -6,12 +6,12 @@ A machine learning web app that predicts whether a telecom customer is likely to
 
 ---
 
-## 📌 Problem Statement
+##  Problem Statement
 Customer churn is one of the biggest challenges in the telecom industry. This project builds an end-to-end ML pipeline to identify at-risk customers before they leave.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Python** — pandas, numpy, scikit-learn, XGBoost
 - **ML** — Random Forest with GridSearchCV tuning
 - **Explainability** — SHAP
@@ -20,7 +20,7 @@ Customer churn is one of the biggest challenges in the telecom industry. This pr
 
 ---
 
-## 📊 Model Performance
+##  Model Performance
 | Metric | Score |
 |---|---|
 | Accuracy | 84.03% |
@@ -31,7 +31,7 @@ Customer churn is one of the biggest challenges in the telecom industry. This pr
 
 ---
 
-## 🔍 Key Insights from SHAP
+## Key Insights from SHAP
 - **Contract type** is the #1 churn driver
 - **High monthly charges** significantly increase churn risk
 - **Low tenure** customers are most vulnerable
@@ -39,7 +39,7 @@ Customer churn is one of the biggest challenges in the telecom industry. This pr
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 customer-churn-predictor/
 ├── data/                  # Dataset
 ├── notebooks/             # EDA notebook
@@ -53,7 +53,7 @@ customer-churn-predictor/
 
 ---
 
-## 🚀 Run Locally
+##  Run Locally
 git clone https://github.com/yourusername/customer-churn-predictor
 cd customer-churn-predictor
 pip install -r requirements.txt
@@ -61,5 +61,5 @@ streamlit run app.py
 
 ---
 
-## 📬 Contact
+## Contact
 **Yash Kumawat** — [LinkedIn](https://linkedin.com/in/yash-kumawat03/)
